@@ -1,0 +1,33 @@
+# Load necessary libraries
+library(readxl)
+library(dplyr)
+
+# Load the dataset
+data <- read_excel("EARLY_MARRIAGE_CLEAN_DATA.xlsx", sheet = "Sheet1")
+
+# View the first few rows of the dataset
+head(data)
+
+# Count the responses for counseling/support services
+counseling_summary <- data %>%
+  count(`Do refugee girls in Kakuma have access to counseling or support services to prevent early marriage?`) %>%
+  mutate(Percentage = n / sum(n) * 100)
+
+# Print the summary
+print(counseling_summary)
+
+# Analyze the relationship between counseling and education interruption due to early marriage
+education_vs_counseling <- data %>%
+  filter(`Do refugee girls in Kakuma have access to counseling or support services to prevent early marriage?` == "Yes") %>%
+  count(`Is education for girls in Kakuma refugee camp limited due to early marriage?`)
+
+# Print the relationship
+print(education_vs_counseling)
+
+# Plot the data (optional)
+library(ggplot2)
+
+ggplot(counseling_summary, aes(x = `Do refugee girls in Kakuma have access to counseling or support services to prevent early marriage?`, y = Percentage, fill = `Do refugee girls in Kakuma have access to counseling or support services to prevent early marriage?`)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Access to Counseling Services in Kakuma", x = "Response", y = "Percentage") +
+  theme_minimal()
